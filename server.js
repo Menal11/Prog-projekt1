@@ -10,6 +10,9 @@ app.use('/', function(req, res) {
    res.send('Hey ven');
 });
 
+app.get('/', (req, res) => {
+   res.redirect('/createUser.html');
+ });
 
 app.listen(port, () => {
    console.log('Server listening on port ' + port);
