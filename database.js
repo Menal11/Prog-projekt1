@@ -61,4 +61,8 @@ async function createUser(brugernavn, email, password, repeatpassword) {
     } finally {
       await sql.close(); //  !! afbryder endeligt forbindelsen i slutningen af funktionen (finally)
     }
+
+
 }
+
+console.log(12);
