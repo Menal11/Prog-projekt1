@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Opret bruger </title>
+</head>
+<body>
+    <h1 id="Overskrift"> Opret bruger </h1>
+    <p id="Underrubrik"> Indtast dine oplysninger for at oprette en bruger</p>    
+    
+    <form id="formKontrol">
+        
+        <div class="container"> 
+            <div> 
+                <label for ="email"> Email adresse: </label>   <!-- for og id skal være det samme-->
+                <input id="email" type="text" name="email" autocomplete="email" required>
+            </div> 
+    
+            <div> 
+                <label for ="username"> Brugernavn: </label>   <!-- for og id skal være det samme-->
+                <input id="username" type="text" name="username" autocomplete="username" required>
+            </div> 
+            <div>
+                <label for ="password">Adgangskode: </label>
+                <input id="password" type="password" name="password" autocomplete="new-password" minlength="8" required>
+            </div>
+            <div>
+                <label for ="repeat-password">Gentag adgangskode: </label>
+                <input id="repeat-password" type="password" name="password" autocomplete="new-password" minlength="8" required>
+            </div>
+
+        </div>
+        
+
+        <button id='logind' type="submit"> Log ind</button>
+        <button id='opretbruger' type="submit"> Opret bruger</button>
+
+    </form>
+    
+<script>
+
+    // opretter variabler udfra deres ID 
+    const userName = document.getElementById('Username');
+    const passWord = document.getElementById('Password');
+    const repeatPassword = document.getElementById('repeat-password');
+    const logInd = document.getElementById('logind');
+    const opretBruger = document.getElementById('opretbruger');
+    const Email = document.getElementById('Email') // email med stort så der skelnes i json.stringify
+
+
+
+    // FETCH
+ function opretBruger(event) {
+    event.preventDefault(); // så at knappen ikke genindlæser hele siden når den trykkes. 
+    // også derfor event er i funktionen^^
+
+     if (passWord.value === repeatPassword.value) { // husk .value for sammenligning
+         fetch("/opretbruger", // hvad skal denne hedde?
+             {
+                method: "POST", // vi vil oprette brugeren i databasen
+                 headers: { // behøver vi disse
+                     'Accept': 'application/json',
+                     'Content-Type': 'application/json'
+                 },
+
+                 //body: JSON.stringify({brugernavn: document.getElementById('Username')}, email: document.getElementById(Email), password: document.getElementById(password))
+
+                 body: JSON.stringify({
+                    brugernavn: userName.value, 
+                    email: Email.value, 
+                    password: passWord.value, 
+                    repeatpassword: repeatPassword.value
+                 }) 
+            }). //then(function(res){ (res.status.send)}) // hvordan sender vi statuskoden? hvad skal vi her i then og catch
+            //.catch(function(res){ (res.status.send)})
+
+            alert('Konto oprettet for brugeren:' + userName.value);
+
+            // Ryd kodeordsfelterne til sidst
+            passWord.value = "";
+            repeatPassword.value = "";
+    }
+}    
+    
+
+    // opretbruger knappen trykkes, så kører metoden opretBruger()
+    opretbruger.addEventListener('click', opretBruger);
+    //knap.addEventListener('submit', opretBruger);
+
+    
+</script>
+
+<style>
+
+button {
+    cursor: pointer;
+    padding: 8px 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    
+}
+button:hover {
+    background-color: #0056b3;
+}
+
+/* god til formular styling*/
+body {
+    font-family:'Inter', sans-serif;
+    margin: 200px;
+    font-size: large;
+    padding: 0;
+    background-color:  #fefefe;;
+} 
+/* rigtig god til formular styling*/
+form {
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+    background-color: rgb(231, 225, 225);
+    text-align: center; /* for at centrere teksten */
+    border: 1px solid #fefefe;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(242, 238, 238, 0.1);
+    justify-content: center;
+}
+
+/* laver mellemrum */
+form div {
+    margin-bottom: 15px;
+
+
+}
+
+
+input[type=text]{
+    width: 100%;
+    padding: 2px;
+    margin: 2px;
+    display: inline;
+    box-sizing: border-box;
+}
+input[type=password]{
+    width: 100%;
+    padding: 4px;
+    margin: 4px;
+    display: inline;
+    box-sizing: border-box;
+   
+}
+
+h1 {
+    font-size: 30px;
+    font-family:'Inter', sans-serif;
+        text-align: center;
+}
+
+p {
+    font-family:'Inter', sans-serif;
+    text-align: center;
+}
+</style>
+
+<script>
+    const form = document.getElementById('formKontrol');
+  
+    form.addEventListener('submit', function(event) {
+      event.preventDefault(); // Forhindrer siden i at reloade
+  
+      const data = {
+        brugernavn: document.getElementById('username').value,
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value
+      };
+  
+      fetch('/api/opretbruger', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => {
+        if (response.ok) {
+          alert('Bruger oprettet!');
+        } else {
+          alert('Noget gik galt.');
+        }
+      });
+    });
+  </script>
+  
+</body>
+</html>
